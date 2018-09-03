@@ -8,9 +8,6 @@ const server = http.createServer((req, res) => {
     if (err) {
       res.statusCode = 404;
       res.write('404');
-      res.write('404');
-      res.write('404');
-      res.write('404');
       res.end();
       return;
     }
