@@ -5,7 +5,7 @@ const debug = require('debug');
 const log = debug('*');
 
 const server = http.createServer((req, res) => {
-  const filename = req.url === '/' ? './index.html' : `.${req.url}.html`;
+  const filename = req.url === '/' ? './public/index.html' : `./public/${req.url}`;
 
   log('request: %s', req.url);
 
