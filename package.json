@@ -9,5 +9,8 @@
   "author": "Dmitry Dorofeev",
   "license": "ISC",
   "keywords": [],
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "debug": "^3.1.0"
+  }
 }
