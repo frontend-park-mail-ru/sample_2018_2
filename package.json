@@ -1,15 +1,10 @@
 {
-  "name": "sample-2k18",
+  "name": "sample",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js"
   },
-  "author": "Dmitry Dorofeev",
-  "license": "ISC",
-  "keywords": [],
-  "description": "",
   "dependencies": {
     "debug": "^3.1.0"
   }
