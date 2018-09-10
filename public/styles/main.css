@@ -1,0 +1,111 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#root {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    grid-template-rows: 1fr 2fr 3fr 3fr;
+}
+
+#authbar {
+    text-align: center;
+    grid-column: 3 / 4;
+    grid-row : 1 / 2;
+}
+
+#logo {
+    width: 100%;
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+#logo>h1 {
+    text-align: center;
+    vertical-align: center;
+}
+
+#main {
+    width: 400px;
+    text-align: center;
+    vertical-align: center;
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+}
+
+.elements {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    width: 230px;
+}
+
+.auth-button {
+    height: 40px;
+    width: 115px;
+    margin-top: 5%;
+}
+
+.menu-button {
+    height: 55px;
+    width: 100%;
+    margin-top: 5%;
+}
+
+.form-button {
+    height: 55px;
+    width: 80%;
+    margin-top: 5%;
+}
+
+.field {
+    width: 200px;
+    height: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5%;
+    display: block;
+}
+
+ul {
+    margin-left: auto;
+    margin-right: auto;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.developers {
+    grid-row: 2 / 3;
+    width: 100%;
+}
+
+.table{
+	display: table;
+	width: 100%;
+}
+
+.tableRow {
+	display: table-row;
+}
+
+.tableHeading {
+	background-color: #EEE;
+    display: table-header-group;
+	font-weight: bold;
+}
+
+.tableCell, .tableHead {
+	border: 1px solid #999999;
+	display: table-cell;
+	padding: 3px 10px;
+}
+
+.tableFoot {
+	background-color: #EEE;
+	display: table-footer-group;
+	font-weight: bold;
+}
+
+.tableBody {
+	display: table-row-group;
+}
