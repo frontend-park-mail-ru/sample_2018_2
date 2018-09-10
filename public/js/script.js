@@ -70,9 +70,9 @@ function createSignIn () {
 
 	const inputs = [
 		{
-			name: 'login',
-			type: 'text',
-			placeholder: 'Login'
+			name: 'email',
+			type: 'email',
+			placeholder: 'Email'
 		},
 		{
 			name: 'password',
@@ -117,14 +117,14 @@ function createSignUp () {
 
 	const inputs = [
 		{
-			name: 'login',
-			type: 'text',
-			placeholder: 'Login'
-		},
-		{
 			name: 'email',
 			type: 'email',
 			placeholder: 'Email'
+		},
+		{
+			name: 'age',
+			type: 'number',
+			placeholder: 'Your Age'
 		},
 		{
 			name: 'password',
@@ -162,7 +162,7 @@ function createSignUp () {
 	root.appendChild(signUpSection);
 }
 
-function createLeaderboard () {
+function createLeaderboard (users) {
 	const leaderboardSection = document.createElement('section');
 	leaderboardSection.dataset.sectionName = 'leaderboard';
 
@@ -172,10 +172,55 @@ function createLeaderboard () {
 	leaderboardSection.appendChild(header);
 	leaderboardSection.appendChild(createMenuLink());
 
+	if (users) {
+		const table = document.createElement('table');
+		const thead = document.createElement('thead');
+		thead.innerHTML = `
+		<tr>
+			<th>Email</th>
+			<th>Age</th>
+			<th>Score</th>
+		</th>
+		`;
+		const tbody = document.createElement('tbody');
+
+		table.appendChild(thead);
+		table.appendChild(tbody);
+		table.border = 1;
+		table.cellSpacing = table.cellPadding = 0;
+
+		users.forEach(function (user) {
+			const email = user.email;
+			const age = user.email;
+			const score = user.email;
+
+			const tr = document.createElement('tr');
+			const tdEmail = document.createElement('td');
+			const tdAge = document.createElement('td');
+			const tdScore = document.createElement('td');
+
+			tdEmail.textContent = email;
+			tdAge.textContent = age;
+			tdScore.textContent = score;
+
+			tr.appendChild(tdEmail);
+			tr.appendChild(tdAge);
+			tr.appendChild(tdScore);
+
+			tbody.appendChild(tr);
+
+			leaderboardSection.appendChild(table);
+		});
+	} else {
+		const em = document.createElement('em');
+		em.textContent = 'Loading';
+		leaderboardSection.appendChild(em);
+	}
+
 	root.appendChild(leaderboardSection);
 }
 
-function createProfile () {
+function createProfile (me) {
 	const profileSection = document.createElement('section');
 	profileSection.dataset.sectionName = 'profile';
 
@@ -184,6 +229,23 @@ function createProfile () {
 
 	profileSection.appendChild(header);
 	profileSection.appendChild(createMenuLink());
+
+	if (me) {
+		const p = document.createElement('p');
+
+		const div1 = document.createElement('div');
+		div1.textContent = `Email ${me.email}`;
+		const div2 = document.createElement('div');
+		div2.textContent = `Age ${me.age}`;
+		const div3 = document.createElement('div');
+		div3.textContent = `Score ${me.score}`;
+
+		p.appendChild(div1);
+		p.appendChild(div3);
+		p.appendChild(div3);
+
+		profileSection.appendChild(p);
+	}
 
 	root.appendChild(profileSection);
 }
@@ -197,7 +259,6 @@ const pages = {
 };
 
 createMenu();
-
 
 root.addEventListener('click', function (event) {
 	if (!(event.target instanceof HTMLAnchorElement)) {
