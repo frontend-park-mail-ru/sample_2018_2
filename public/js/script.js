@@ -3,6 +3,30 @@
 const root = document.getElementById('root');
 
 
+function ajax (callback, method, path, body) {
+	const xhr = new XMLHttpRequest();
+	xhr.open(method, path, true);
+	xhr.withCredentials = true;
+
+	if (body) {
+		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+	}
+
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState !== 4) {
+			return;
+		}
+
+		callback(xhr);
+	};
+
+	if (body) {
+		xhr.send(JSON.stringify(body));
+	} else {
+		xhr.send();
+	}
+}
+
 function createMenuLink () {
 	const menuLink = document.createElement('a');
 	menuLink.href = menuLink.dataset.href = 'menu';
@@ -101,6 +125,20 @@ function createSignIn () {
 	signInSection.appendChild(form);
 	signInSection.appendChild(createMenuLink());
 
+	form.addEventListener('submit', function (event) {
+		event.preventDefault();
+
+		const email = form.elements[ 'email' ].value;
+		const password = form.elements[ 'password' ].value;
+
+		ajax(function (xhr) {
+			root.innerHTML = '';
+			createProfile();
+		}, 'POST', '/login', {
+			email: email,
+			password: password
+		});
+	});
 
 	root.appendChild(signInSection);
 }
@@ -158,6 +196,29 @@ function createSignUp () {
 	signUpSection.appendChild(form);
 	signUpSection.appendChild(createMenuLink());
 
+	form.addEventListener('submit', function (event) {
+		event.preventDefault();
+
+		const email = form.elements[ 'email' ].value;
+		const age = parseInt(form.elements[ 'age' ].value);
+		const password = form.elements[ 'password' ].value;
+		const password_repeat = form.elements[ 'password_repeat' ].value;
+
+		if (password !== password_repeat) {
+			alert('Passwords is not equals');
+
+			return;
+		}
+
+		ajax(function (xhr) {
+			root.innerHTML = '';
+			createProfile();
+		}, 'POST', '/signup', {
+			email: email,
+			age: age,
+			password: password
+		});
+	});
 
 	root.appendChild(signUpSection);
 }
@@ -171,6 +232,7 @@ function createLeaderboard (users) {
 
 	leaderboardSection.appendChild(header);
 	leaderboardSection.appendChild(createMenuLink());
+	leaderboardSection.appendChild(document.createElement('br'));
 
 	if (users) {
 		const table = document.createElement('table');
@@ -191,8 +253,8 @@ function createLeaderboard (users) {
 
 		users.forEach(function (user) {
 			const email = user.email;
-			const age = user.email;
-			const score = user.email;
+			const age = user.age;
+			const score = user.score;
 
 			const tr = document.createElement('tr');
 			const tdEmail = document.createElement('td');
@@ -215,6 +277,12 @@ function createLeaderboard (users) {
 		const em = document.createElement('em');
 		em.textContent = 'Loading';
 		leaderboardSection.appendChild(em);
+
+		ajax(function (xhr) {
+			const users = JSON.parse(xhr.responseText);
+			root.innerHTML = '';
+			createLeaderboard(users);
+		}, 'GET', '/users');
 	}
 
 	root.appendChild(leaderboardSection);
@@ -245,6 +313,19 @@ function createProfile (me) {
 		p.appendChild(div3);
 
 		profileSection.appendChild(p);
+	} else {
+		ajax(function (xhr) {
+			if (!xhr.responseText) {
+				alert('Unauthorized');
+				root.innerHTML = '';
+				createMenu();
+				return;
+			}
+
+			const user = JSON.parse(xhr.responseText);
+			root.innerHTML = '';
+			createProfile(user);
+		}, 'GET', '/me');
 	}
 
 	root.appendChild(profileSection);
