@@ -113,7 +113,7 @@ function createSignIn () {
 		const password = form.elements[ 'password' ].value;
 
 		AJAX.doPost({
-			callback: function (xhr) {
+			callback (xhr) {
 				root.innerHTML = '';
 				createProfile();
 			},
@@ -196,7 +196,7 @@ function createSignUp () {
 		}
 
 		AJAX.doPost({
-			callback: function (xhr) {
+			callback (xhr) {
 				root.innerHTML = '';
 				createProfile();
 			},
