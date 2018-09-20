@@ -1,31 +1,12 @@
 'use strict';
 
+import {
+	BoardComponent,
+	RENDER_TYPES,
+} from './components/Board/Board.mjs';
+
 const root = document.getElementById('root');
-
-
-function ajax (callback, method, path, body) {
-	const xhr = new XMLHttpRequest();
-	xhr.open(method, path, true);
-	xhr.withCredentials = true;
-
-	if (body) {
-		xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-	}
-
-	xhr.onreadystatechange = function () {
-		if (xhr.readyState !== 4) {
-			return;
-		}
-
-		callback(xhr);
-	};
-
-	if (body) {
-		xhr.send(JSON.stringify(body));
-	} else {
-		xhr.send();
-	}
-}
+const AJAX = window.AjaxModule;
 
 function createMenuLink () {
 	const menuLink = document.createElement('a');
@@ -131,12 +112,16 @@ function createSignIn () {
 		const email = form.elements[ 'email' ].value;
 		const password = form.elements[ 'password' ].value;
 
-		ajax(function (xhr) {
-			root.innerHTML = '';
-			createProfile();
-		}, 'POST', '/login', {
-			email: email,
-			password: password
+		AJAX.doPost({
+			callback (xhr) {
+				root.innerHTML = '';
+				createProfile();
+			},
+			path: '/login',
+			body: {
+				email,
+				password,
+			},
 		});
 	});
 
@@ -210,13 +195,17 @@ function createSignUp () {
 			return;
 		}
 
-		ajax(function (xhr) {
-			root.innerHTML = '';
-			createProfile();
-		}, 'POST', '/signup', {
-			email: email,
-			age: age,
-			password: password
+		AJAX.doPost({
+			callback (xhr) {
+				root.innerHTML = '';
+				createProfile();
+			},
+			path: '/signup',
+			body: {
+				email,
+				password,
+				age,
+			},
 		});
 	});
 
@@ -233,56 +222,26 @@ function createLeaderboard (users) {
 	leaderboardSection.appendChild(header);
 	leaderboardSection.appendChild(createMenuLink());
 	leaderboardSection.appendChild(document.createElement('br'));
+	const tableWrapper = document.createElement('div');
+	leaderboardSection.appendChild(tableWrapper);
 
 	if (users) {
-		const table = document.createElement('table');
-		const thead = document.createElement('thead');
-		thead.innerHTML = `
-		<tr>
-			<th>Email</th>
-			<th>Age</th>
-			<th>Score</th>
-		</th>
-		`;
-		const tbody = document.createElement('tbody');
-
-		table.appendChild(thead);
-		table.appendChild(tbody);
-		table.border = 1;
-		table.cellSpacing = table.cellPadding = 0;
-
-		users.forEach(function (user) {
-			const email = user.email;
-			const age = user.age;
-			const score = user.score;
-
-			const tr = document.createElement('tr');
-			const tdEmail = document.createElement('td');
-			const tdAge = document.createElement('td');
-			const tdScore = document.createElement('td');
-
-			tdEmail.textContent = email;
-			tdAge.textContent = age;
-			tdScore.textContent = score;
-
-			tr.appendChild(tdEmail);
-			tr.appendChild(tdAge);
-			tr.appendChild(tdScore);
-
-			tbody.appendChild(tr);
-
-			leaderboardSection.appendChild(table);
-		});
+		const board = new BoardComponent({el: tableWrapper, type: RENDER_TYPES.STRING});
+		board.data = users;
+		board.render();
 	} else {
 		const em = document.createElement('em');
 		em.textContent = 'Loading';
 		leaderboardSection.appendChild(em);
 
-		ajax(function (xhr) {
-			const users = JSON.parse(xhr.responseText);
-			root.innerHTML = '';
-			createLeaderboard(users);
-		}, 'GET', '/users');
+		AJAX.doGet({
+			callback (xhr) {
+				const users = JSON.parse(xhr.responseText);
+				root.innerHTML = '';
+				createLeaderboard(users);
+			},
+			path: '/users',
+		});
 	}
 
 	root.appendChild(leaderboardSection);
@@ -314,18 +273,21 @@ function createProfile (me) {
 
 		profileSection.appendChild(p);
 	} else {
-		ajax(function (xhr) {
-			if (!xhr.responseText) {
-				alert('Unauthorized');
-				root.innerHTML = '';
-				createMenu();
-				return;
-			}
+		AJAX.doGet({
+			callback (xhr) {
+				if (!xhr.responseText) {
+					alert('Unauthorized');
+					root.innerHTML = '';
+					createMenu();
+					return;
+				}
 
-			const user = JSON.parse(xhr.responseText);
-			root.innerHTML = '';
-			createProfile(user);
-		}, 'GET', '/me');
+				const user = JSON.parse(xhr.responseText);
+				root.innerHTML = '';
+				createProfile(user);
+			},
+			path: '/me',
+		});
 	}
 
 	root.appendChild(profileSection);
