@@ -19,11 +19,11 @@ if (process.env.MOCKS) {
 	initMocks(app);
 }
 
-app.use("*", proxy("https://sample-go.now.sh/", {
-  proxyReqPathResolver: function(req) {
-    return req.originalUrl;
-  }
-}))
+app.use('*', proxy('https://sample-go.now.sh/', {
+	proxyReqPathResolver: function (req) {
+		return req.originalUrl;
+	}
+}));
 
 const port = process.env.PORT || 3000;
 

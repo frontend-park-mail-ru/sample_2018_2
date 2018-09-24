@@ -1,7 +1,7 @@
 export const RENDER_TYPES = {
 	DOM: 'dom',
 	STRING: 'string',
-	TMPL: 'template',
+	TMPL: 'template'
 };
 
 export class BoardComponent {
@@ -11,10 +11,10 @@ export class BoardComponent {
 	}
 
 	get data () {
-		this._data;
+		return this._data;
 	}
 
-	set data (data = []) {
+	set data (data) {
 		this._data = data;
 	}
 
@@ -37,7 +37,7 @@ export class BoardComponent {
 	}
 
 	_renderTMPL () {
-		const template = window.fest['js/components/Board/Board.tmpl'](this._data);
+		const template = window.fest[ 'js/components/Board/Board.tmpl' ](this._data);
 		this._el.innerHTML = template;
 	}
 
@@ -54,14 +54,14 @@ export class BoardComponent {
 			</thead>
 			<tbody>
 				${this._data.map(({email, age, score}) => (
-					`
+			`
 						<tr class="table-body__row">
 							<td>${email}</td>
 							<td>${age}</td>
 							<td>${score}</td>
 						</tr>
 					`.trim()
-				)).join('\n')}
+		)).join('\n')}
 			</tbody>
 		</table>
 		`.trim();

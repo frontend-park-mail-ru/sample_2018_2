@@ -1,9 +1,7 @@
 'use strict';
 
-import {
-	BoardComponent,
-	RENDER_TYPES,
-} from './components/Board/Board.mjs';
+import { BoardComponent, RENDER_TYPES } from './components/Board/Board.mjs';
+
 
 const root = document.getElementById('root');
 const AJAX = window.AjaxModule;
@@ -120,8 +118,8 @@ function createSignIn () {
 			path: '/login',
 			body: {
 				email,
-				password,
-			},
+				password
+			}
 		});
 	});
 
@@ -204,8 +202,8 @@ function createSignUp () {
 			body: {
 				email,
 				password,
-				age,
-			},
+				age
+			}
 		});
 	});
 
@@ -240,7 +238,7 @@ function createLeaderboard (users) {
 				root.innerHTML = '';
 				createLeaderboard(users);
 			},
-			path: '/users',
+			path: '/users'
 		});
 	}
 
@@ -286,7 +284,7 @@ function createProfile (me) {
 				root.innerHTML = '';
 				createProfile(user);
 			},
-			path: '/me',
+			path: '/me'
 		});
 	}
 
