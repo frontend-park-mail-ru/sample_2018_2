@@ -4,7 +4,6 @@ const express = require('express');
 const body = require('body-parser');
 const cookie = require('cookie-parser');
 const morgan = require('morgan');
-const uuid = require('uuid/v4');
 const path = require('path');
 const app = express();
 const initMocks = require('./mocks');

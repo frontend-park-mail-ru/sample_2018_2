@@ -6,6 +6,12 @@ import { BoardComponent, RENDER_TYPES } from './components/Board/Board.mjs';
 const root = document.getElementById('root');
 const AJAX = window.AjaxModule;
 
+if (window.location.host === 'localhost:3000') {
+	AJAX.BaseURL = 'http://localhost:3001';
+} else if (window.location.host === 'sample.now.sh') {
+	AJAX.BaseURL = 'https://sample-backend.now.sh';
+}
+
 function createMenuLink () {
 	const menuLink = document.createElement('a');
 	menuLink.href = menuLink.dataset.href = 'menu';
@@ -110,17 +116,26 @@ function createSignIn () {
 		const email = form.elements[ 'email' ].value;
 		const password = form.elements[ 'password' ].value;
 
-		AJAX.doPost({
-			callback (xhr) {
-				root.innerHTML = '';
-				createProfile();
-			},
+		AJAX.doFetchPost({
 			path: '/login',
 			body: {
 				email,
 				password
 			}
-		});
+		})
+			.then(function (response) {
+				if (response.status >= 300) {
+					throw response;
+				}
+				return response.json();
+			})
+			.then(function (json) {
+				root.innerHTML = '';
+				createProfile();
+			})
+			.catch(function (error) {
+				console.error(error);
+			});
 	});
 
 	root.appendChild(signInSection);
@@ -232,14 +247,19 @@ function createLeaderboard (users) {
 		em.textContent = 'Loading';
 		leaderboardSection.appendChild(em);
 
-		AJAX.doGet({
-			callback (xhr) {
+		AJAX
+			.doPromiseGet({
+				path: '/users'
+			})
+			.then(function (xhr) {
 				const users = JSON.parse(xhr.responseText);
 				root.innerHTML = '';
 				createLeaderboard(users);
-			},
-			path: '/users'
-		});
+			})
+			.catch(function (error) {
+				console.error(error);
+			})
+		;
 	}
 
 	root.appendChild(leaderboardSection);
@@ -271,8 +291,11 @@ function createProfile (me) {
 
 		profileSection.appendChild(p);
 	} else {
-		AJAX.doGet({
-			callback (xhr) {
+		AJAX
+			.doPromiseGet({
+				path: '/me'
+			})
+			.then(function (xhr) {
 				if (!xhr.responseText) {
 					alert('Unauthorized');
 					root.innerHTML = '';
@@ -283,9 +306,10 @@ function createProfile (me) {
 				const user = JSON.parse(xhr.responseText);
 				root.innerHTML = '';
 				createProfile(user);
-			},
-			path: '/me'
-		});
+			})
+			.catch(function (error) {
+				console.error(error);
+			});
 	}
 
 	root.appendChild(profileSection);

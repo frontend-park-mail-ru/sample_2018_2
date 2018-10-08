@@ -2,9 +2,10 @@
 	const noop = () => null;
 
 	class AjaxModule {
-		_ajax ({callback = noop, method = 'GET', path = '/', body} = {}) {
+		static _ajax ({callback = noop, method = 'GET', path = '/', body} = {}) {
+			const baseURL = AjaxModule.BaseURL || '';
 			const xhr = new XMLHttpRequest();
-			xhr.open(method, path, true);
+			xhr.open(method, baseURL + path, true);
 			xhr.withCredentials = true;
 
 			if (body) {
@@ -26,14 +27,42 @@
 			}
 		}
 
-		doGet (params = {}) {
-			this._ajax({...params, method: 'GET'});
+		static doGet (params = {}) {
+			AjaxModule._ajax({...params, method: 'GET'});
 		}
 
-		doPost (params = {}) {
-			this._ajax({...params, method: 'POST'});
+		static doPost (params = {}) {
+			AjaxModule._ajax({...params, method: 'POST'});
+		}
+
+		static doPromiseGet (params = {}) {
+			return new Promise(function (resolve, reject) {
+
+				AjaxModule._ajax({
+					...params,
+					method: 'GET',
+					callback (xhr) {
+
+						resolve(xhr);
+					}
+				});
+
+			});
+		}
+
+		static doFetchPost (params = {}) {
+			const baseURL = AjaxModule.BaseURL || '';
+			return fetch(baseURL + params.path, {
+				method: 'POST',
+				mode: 'cors',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json; charset=utf-8'
+				},
+				body: JSON.stringify(params.body)
+			});
 		}
 	}
 
-	window.AjaxModule = new AjaxModule();
+	window.AjaxModule = AjaxModule;
 })();
