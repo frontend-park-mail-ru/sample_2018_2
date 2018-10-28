@@ -19,6 +19,12 @@ bus.on('fetch-users', function () {
 const root = document.getElementById('root');
 const router = new Router(root);
 
+const ws = new WebSocket('ws://localhost:3000/ws');
+
+ws.onopen = function () {
+	ws.send('hi');
+};
+
 router
 	.register('/', MenuView)
 	.register('/scoreboard', ScoreboardView);
